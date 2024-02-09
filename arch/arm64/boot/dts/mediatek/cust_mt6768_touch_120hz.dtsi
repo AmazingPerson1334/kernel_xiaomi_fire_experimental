@@ -1,8 +1,10 @@
-// SPDX-License-Identifier: GPL-2.0
+/* SPDX-License-Identifier: GPL-2.0 */
 /*
- * Copyright (c) 2022 MediaTek Inc.
- */
-&spi4 {
+ * Copyright (c) 2019 MediaTek Inc.
+*/
+/* TOUCH start */
+
+&spi5 {
 	status = "okay";
 	#address-cells = <1>;
 	#size-cells = <0>;
@@ -24,8 +26,8 @@
 		//4800000,9600000,15000000,19200000
 		spi-max-frequency = <4800000>;
 
-		novatek,reset-gpio = <&pio 20 0x00>;
-		novatek,irq-gpio = <&pio 21 0x00>;
+		novatek,reset-gpio = <&pio 23 0x00>;
+		novatek,irq-gpio = <&pio 1 0x00>;
 
 		/* 525 */
 		//novatek,swrst-n8-addr = <0x01F01A>;
@@ -526,35 +528,36 @@
 	};
 	ctp_gt9896s_int_active: int1_active {
 		pins_cmd_dat {
-			pinmux = <PINMUX_GPIO21__FUNC_GPIO21>;
+			pinmux = <PINMUX_GPIO1__FUNC_GPIO1>;
 			input-enable;
 		};
 	};
 	ctp_gt9896s_reset_active: reset1_active {
 		pins_cmd_dat {
-			pinmux = <PINMUX_GPIO20__FUNC_GPIO20>;
+			pinmux = <PINMUX_GPIO23__FUNC_GPIO23>;
 			output-high;
 		};
 	};
 	ctp_gt9896s_int_suspend: int1_suspend {
 		pins_cmd_dat {
-			pinmux = <PINMUX_GPIO21__FUNC_GPIO21>;
+			pinmux = <PINMUX_GPIO1__FUNC_GPIO1>;
 			output-low;
 		};
 	};
 	ctp_gt9896s_reset_suspend: reset1_suspend {
 		pins_cmd_dat {
-			pinmux = <PINMUX_GPIO20__FUNC_GPIO20>;
+			pinmux = <PINMUX_GPIO23__FUNC_GPIO23>;
 			output-low;
 		};
 	};
 	ctp_gt9896s_spi_mode: spimode_default {
 		pins_cmd_dat {
-			pinmux = <PINMUX_GPIO18__FUNC_SPI4_C_MI>,
-				<PINMUX_GPIO19__FUNC_SPI4_C_MO>,
-				<PINMUX_GPIO204__FUNC_SPI4_C_CLK>,
-				<PINMUX_GPIO205__FUNC_SPI4_C_CSB>;
+			pinmux = <PINMUX_GPIO13__FUNC_SPI5_MI>,
+				<PINMUX_GPIO15__FUNC_SPI5_MO>,
+				<PINMUX_GPIO16__FUNC_SPI5_CLK>,
+				<PINMUX_GPIO14__FUNC_SPI5_CSB>;
 			drive-strength = <2>;
 		};
 	};
 };
+/* TOUCH end */
