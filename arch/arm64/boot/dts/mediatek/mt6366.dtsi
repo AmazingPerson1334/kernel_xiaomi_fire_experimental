@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: GPL-2.0 */
 /*
- * Copyright (c) 2019 MediaTek Inc.
+ * Copyright (c) 2021 MediaTek Inc.
 */
 
 &main_pmic {
@@ -27,11 +27,9 @@
 			<INT_VCN33_OC SP_LDO>,
 			<INT_VCN28_OC SP_LDO>,
 			<INT_VCN18_OC SP_LDO>,
-			<INT_VCAMA1_OC SP_LDO>,
-			<INT_VCAMA2_OC SP_LDO>,
-			<INT_VCAMD_OC SP_LDO>,
-			<INT_VCAMIO_OC SP_LDO>,
-			<INT_VLDO28_OC SP_LDO>,
+			<INT_VM18_OC SP_LDO>,
+			<INT_VMDDR_OC SP_LDO>,
+			<INT_VSRAM_CORE_OC SP_LDO>,
 			<INT_VA12_OC SP_LDO>,
 			<INT_VAUX18_OC SP_LDO>,
 			<INT_VAUD28_OC SP_LDO>,
@@ -109,11 +107,9 @@
 			"vcn33_oc",
 			"vcn28_oc",
 			"vcn18_oc",
-			"vcama1_oc",
-			"vcama2_oc",
-			"vcamd_oc",
-			"vcamio_oc",
-			"vldo28_oc",
+			"vm18_oc",
+			"vmddr_oc",
+			"vsram_core_oc",
 			"va12_oc",
 			"vaux18_oc",
 			"vaud28_oc",
@@ -191,11 +187,15 @@
 				  "bat_l",
 				  "fg_cur_h",
 				  "fg_cur_l";
+		/* WK for power plan change */
+		pmic,init_gpio = <&pio 200 0x0>;
 	};
 
 	pmic_auxadc: mt635x-auxadc {
 		compatible = "mediatek,mt6358-auxadc";
 		#io-channel-cells = <1>;
+		/* efuse offset from mt6358 */
+		cali-efuse-offset = <1>;
 
 		batadc {
 			channel = <AUXADC_BATADC>;
@@ -246,22 +246,86 @@
 		};
 	};
 
-	mtk_ts_pmic: mtk_ts_pmic {
-		compatible = "mediatek,mtk_ts_pmic";
-		io-channels =
-			<&pmic_auxadc AUXADC_CHIP_TEMP>,
-			<&pmic_auxadc AUXADC_VCORE_TEMP>,
-			<&pmic_auxadc AUXADC_VPROC_TEMP>;
-		io-channel-names =
-			"pmic_chip_temp",
-			"pmic_buck1_temp",
-			"pmic_buck2_temp";
-		interconnects = <&pmic_auxadc 1>;
-		#interconnect-cells = <1>;
-	};
-
 	mt6358regulator: mt6358regulator {
 		compatible = "mediatek,mt6358-regulator";
+		interrupts =
+			<INT_VPROC11_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VPROC12_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VCORE_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VGPU_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VMODEM_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VDRAM1_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VS1_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VS2_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VPA_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VFE28_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VXO22_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VRF18_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VRF12_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VEFUSE_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VCN33_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VCN28_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VCN18_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VM18_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VMDDR_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VSRAM_CORE_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VA12_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VAUX18_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VAUD28_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VIO28_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VIO18_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VSRAM_PROC11_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VSRAM_PROC12_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VSRAM_OTHERS_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VSRAM_GPU_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VDRAM2_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VMC_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VMCH_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VEMC_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VSIM1_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VSIM2_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VIBR_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VUSB_OC IRQ_TYPE_LEVEL_HIGH>,
+			<INT_VBIF28_OC IRQ_TYPE_LEVEL_HIGH>;
+		interrupt-names =
+			"VPROC11",
+			"VPROC12",
+			"VCORE",
+			"VGPU",
+			"VMODEM",
+			"VDRAM1",
+			"VS1",
+			"VS2",
+			"VPA",
+			"VFE28",
+			"VXO22",
+			"VRF18",
+			"VRF12",
+			"VEFUSE",
+			"VCN33_BT",
+			"VCN28",
+			"VCN18",
+			"VM18",
+			"VMDDR",
+			"VSRAM_CORE",
+			"VA12",
+			"VAUX18",
+			"VAUD28",
+			"VIO28",
+			"VIO18",
+			"VSRAM_PROC11",
+			"VSRAM_PROC12",
+			"VSRAM_OTHERS",
+			"VSRAM_GPU",
+			"VDRAM2",
+			"VMC",
+			"VMCH",
+			"VEMC",
+			"VSIM1",
+			"VSIM2",
+			"VIBR",
+			"VUSB",
+			"VBIF28";
 		mt_pmic_vdram1_buck_reg: buck_vdram1 {
 			regulator-name = "vdram1";
 			regulator-min-microvolt = <500000>;
@@ -354,18 +418,6 @@
 			regulator-max-microvolt = <3100000>;
 			regulator-enable-ramp-delay = <270>;
 		};
-		mt_pmic_vcamio_ldo_reg: ldo_vcamio {
-			regulator-name = "vcamio";
-			regulator-min-microvolt = <1800000>;
-			regulator-max-microvolt = <1800000>;
-			regulator-enable-ramp-delay = <270>;
-		};
-		mt_pmic_vcamd_ldo_reg: ldo_vcamd {
-			regulator-name = "vcamd";
-			regulator-min-microvolt = <900000>;
-			regulator-max-microvolt = <1800000>;
-			regulator-enable-ramp-delay = <270>;
-		};
 		mt_pmic_vcn18_ldo_reg: ldo_vcn18 {
 			regulator-name = "vcn18";
 			regulator-min-microvolt = <1800000>;
@@ -389,6 +441,12 @@
 			regulator-min-microvolt = <2800000>;
 			regulator-max-microvolt = <2800000>;
 			regulator-enable-ramp-delay = <270>;
+		};
+		mt_pmic_vsram_core_ldo_reg: ldo_vsram_core {
+			regulator-name = "vsram_core";
+			regulator-min-microvolt = <500000>;
+			regulator-max-microvolt = <1293750>;
+			regulator-enable-ramp-delay = <240>;
 		};
 		mt_pmic_vsram_others_ldo_reg: ldo_vsram_others {
 			regulator-name = "vsram_others";
@@ -438,18 +496,11 @@
 			regulator-max-microvolt = <1293750>;
 			regulator-enable-ramp-delay = <240>;
 		};
-		mt_pmic_vcama1_ldo_reg: ldo_vcama1 {
-			regulator-name = "vcama1";
-			regulator-min-microvolt = <1800000>;
-			regulator-max-microvolt = <3000000>;
-			regulator-enable-ramp-delay = <270>;
-		};
 		mt_pmic_vemc_ldo_reg: ldo_vemc {
 			regulator-name = "vemc";
 			regulator-min-microvolt = <2900000>;
 			regulator-max-microvolt = <3300000>;
 			regulator-enable-ramp-delay = <60>;
-			regulator-always-on;
 		};
 		mt_pmic_vio28_ldo_reg: ldo_vio28 {
 			regulator-name = "vio28";
@@ -462,6 +513,7 @@
 			regulator-min-microvolt = <1200000>;
 			regulator-max-microvolt = <1200000>;
 			regulator-enable-ramp-delay = <270>;
+			regulator-always-on;
 		};
 		mt_pmic_vrf18_ldo_reg: ldo_vrf18 {
 			regulator-name = "vrf18";
@@ -481,23 +533,11 @@
 			regulator-max-microvolt = <3500000>;
 			regulator-enable-ramp-delay = <270>;
 		};
-		mt_pmic_vcama2_ldo_reg: ldo_vcama2 {
-			regulator-name = "vcama2";
-			regulator-min-microvolt = <1800000>;
-			regulator-max-microvolt = <3000000>;
-			regulator-enable-ramp-delay = <270>;
-		};
 		mt_pmic_vmc_ldo_reg: ldo_vmc {
 			regulator-name = "vmc";
 			regulator-min-microvolt = <1800000>;
 			regulator-max-microvolt = <3300000>;
 			regulator-enable-ramp-delay = <60>;
-		};
-		mt_pmic_vldo28_ldo_reg: ldo_vldo28 {
-			regulator-name = "vldo28";
-			regulator-min-microvolt = <2800000>;
-			regulator-max-microvolt = <3000000>;
-			regulator-enable-ramp-delay = <270>;
 		};
 		mt_pmic_vaud28_ldo_reg: ldo_vaud28 {
 			regulator-name = "vaud28";
@@ -525,12 +565,10 @@
 		interrupts = <INT_RTC IRQ_TYPE_NONE>;
 		interrupt-names = "rtc";
 		base = <0x580>;
-		apply-lpsd-solution;
 	};
 	mt6358_misc: mt6358_misc {
 		compatible = "mediatek,mt6358-misc";
 		base = <0x580>;
-		apply-lpsd-solution;
 		dcxo-switch;
 	};
 };/* End of main_pmic */
